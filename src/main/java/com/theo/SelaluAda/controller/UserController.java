@@ -1,7 +1,9 @@
 package com.theo.SelaluAda.controller;
 
+import com.theo.SelaluAda.dto.APIResponse;
 import com.theo.SelaluAda.model.User;
 import com.theo.SelaluAda.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,10 +34,17 @@ public class UserController {
     }
 
     // Create new user
+    //@PostMapping
+    //public ResponseEntity<User> createUser(@RequestBody User user) {
+    //    return ResponseEntity.ok(userService.createUser(user));
+    //}
+
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        return ResponseEntity.ok(userService.createUser(user));
+    public ResponseEntity<APIResponse<User>> createUser(@Valid @RequestBody User user) {
+        User savedUser = userService.createUser(user);
+        return ResponseEntity.ok(new APIResponse<>(true, "User created successfully", savedUser));
     }
+
 
     // Update user
     @PutMapping("/{id}")

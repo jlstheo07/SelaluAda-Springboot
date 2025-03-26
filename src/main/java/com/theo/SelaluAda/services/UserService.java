@@ -29,15 +29,16 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public Optional<User> updateUser(UUID id, User userDetails) {
+    public Optional<User> updateUser(UUID id, User updatedUser) {
         return userRepository.findById(id).map(user -> {
-            user.setName(userDetails.getName());
-            user.setEmail(userDetails.getEmail());
-            user.setPassword(userDetails.getPassword());
-            user.setRoleId(userDetails.getRoleId());
+            user.setName(updatedUser.getName());
+            user.setEmail(updatedUser.getEmail());
+            user.setPassword(updatedUser.getPassword());
+            user.setId_role(updatedUser.getId_role());
             return userRepository.save(user);
         });
     }
+
 
     public boolean deleteUser(UUID id) {
         return userRepository.findById(id).map(user -> {
