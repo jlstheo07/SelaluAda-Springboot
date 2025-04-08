@@ -41,13 +41,14 @@ public class JwtFilter extends GenericFilterBean {
         System.out.println("Raw Authorization Header: [" + authHeader + "]");
 
         // Bypass filter untuk endpoint yang tidak membutuhkan autentikasi
-        if (requestURI.startsWith("/auth/login")|| requestURI.startsWith("/auth/registerAkunCustomer")) {
-            chain.doFilter(request, response);
-            return;
-        }
+        //if (requestURI.startsWith("/auth/login")|| requestURI.startsWith("/auth/registerAkunCustomer")) {
+        //    chain.doFilter(request, response);
+        //    return;
+        //}
 
         // Validasi Authorization Header
         if (authHeader == null || !authHeader.toLowerCase().startsWith("bearer ")) {
+            chain.doFilter(request, response);
             System.out.println("Authorization header missing or invalid.");
             httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing or invalid token");
             return;

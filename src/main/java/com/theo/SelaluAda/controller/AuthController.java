@@ -60,7 +60,7 @@ public class AuthController {
     }
 
     @PostMapping("/registerAkunCustomer")
-    public ResponseEntity<?> registerakun(@RequestBody RegisterRequest RegisterRequest) {
+    public ResponseEntity<?> registkun(@RequestBody RegisterRequest RegisterRequest) {
         authService.registerCustomer(RegisterRequest);
 
         String token = authService.authenticateUser(RegisterRequest.getUsername(), RegisterRequest.getPassword());

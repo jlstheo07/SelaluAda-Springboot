@@ -1,6 +1,8 @@
 package com.theo.SelaluAda.services;
 
+import com.theo.SelaluAda.model.Role;
 import com.theo.SelaluAda.model.User;
+import com.theo.SelaluAda.repository.RoleRepository;
 import com.theo.SelaluAda.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +14,12 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final RoleService roleService;
 
-    public UserService(UserRepository userRepository) {
+
+    public UserService(UserRepository userRepository, RoleService roleService) {
         this.userRepository = userRepository;
+        this.roleService = roleService;
     }
 
     public List<User> getAllUsers() {
@@ -26,6 +31,8 @@ public class UserService {
     }
 
     public User createUser(User user) {
+        Role role = roleService.getById(UUID.fromString("8B205EEC-32B1-4197-841E-09249ADF84DC"));
+        user.setRole(role);
         return userRepository.save(user);
     }
 
@@ -34,7 +41,7 @@ public class UserService {
             user.setName(updatedUser.getName());
             user.setEmail(updatedUser.getEmail());
             user.setPassword(updatedUser.getPassword());
-            user.setId_role(updatedUser.getId_role());
+            user.setRole(updatedUser.getRole());
             return userRepository.save(user);
         });
     }

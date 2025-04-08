@@ -3,6 +3,7 @@ package com.theo.SelaluAda.services;
 import com.theo.SelaluAda.dto.RegisterRequest;
 import com.theo.SelaluAda.model.Role;
 import com.theo.SelaluAda.model.User;
+import com.theo.SelaluAda.repository.RoleRepository;
 import com.theo.SelaluAda.repository.UserRepository;
 import com.theo.SelaluAda.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -22,6 +24,8 @@ public class AuthService {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private RoleService roleService;
 
 
     public String authenticateUser(String email, String password) {
@@ -51,12 +55,12 @@ public class AuthService {
                 logger.info("Password cocok, menghasilkan token...");
 
                 // Jika password belum di-hash, lakukan hashing dan simpan kembali
-                if (!storedPassword.startsWith("$2a$") && !storedPassword.startsWith("$2b$") && !storedPassword.startsWith("$2y$")) {
-                    String hashedPassword = passwordEncoder.encode(password);
-                    user.setPassword(hashedPassword);
-                    userRepository.save(user); // Simpan perubahan ke database
-                    logger.info("Password telah di-hash dan diperbarui di database.");
-                }
+//                if (!storedPassword.startsWith("$2a$") && !storedPassword.startsWith("$2b$") && !storedPassword.startsWith("$2y$")) {
+//                    String hashedPassword = passwordEncoder.encode(password);
+//                    user.setPassword(hashedPassword);
+//                    userRepository.save(user); // Simpan perubahan ke database
+//                    logger.info("Password telah di-hash dan diperbarui di database.");
+//                }
 
                 return jwtUtil.generateToken(user); // Kembalikan JWT Token
             } else {
@@ -76,8 +80,9 @@ public class AuthService {
         User users = new User();
         users.setEmail(request.getUsername());
         users.setPassword(passwordEncoder.encode(request.getPassword())); //hasing password
-        users.setName(request.getNama());
-        //users.setId_role(new Role(2,"Customer"));
+        users.setName(request.getName());
+        Role role = roleService.getById(UUID.fromString("8B205EEC-32B1-4197-841E-09249ADF84DC"));
+        users.setRole(role);
 
         return userRepository.save(users);
     }

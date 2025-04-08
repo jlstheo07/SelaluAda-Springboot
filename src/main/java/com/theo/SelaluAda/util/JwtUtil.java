@@ -40,7 +40,7 @@ public class JwtUtil {
         System.out.println("Expires At: " + expiration);
 
         return Jwts.builder()
-                .setSubject(user.getId_user().toString())
+                .setSubject(user.getId().toString())
                 .setIssuedAt(issuedAt)
                 .setExpiration(expiration)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)

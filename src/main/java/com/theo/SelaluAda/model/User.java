@@ -14,12 +14,12 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table (name ="User")
+@Table (name ="Users")
 
 public class User {
     @Id
     @GeneratedValue (strategy = GenerationType.UUID)
-    private UUID id_user;
+    private UUID id;
 
     @Column(name = "nama", nullable = false, length = 100 )
     private String name;
@@ -30,6 +30,8 @@ public class User {
     @Column(name ="password", nullable = false, length = 12)
     private String password;
 
-    @Column(name = "id_role", nullable = false)
-    private Long Id_role;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name= "Id_role")
+    private Role role;
+
 }
