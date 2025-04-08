@@ -42,7 +42,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<APIResponse<User>> createUser(@Valid @RequestBody User user) {
         User savedUser = userService.createUser(user);
-        return ResponseEntity.ok(new APIResponse<>(true, "User created successfully", savedUser));
+        return ResponseEntity.ok(new APIResponse<>(true, "Akun berhasil dibuat", savedUser));
     }
 
 

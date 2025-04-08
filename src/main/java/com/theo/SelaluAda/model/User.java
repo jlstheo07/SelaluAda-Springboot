@@ -31,5 +31,5 @@ public class User {
     private String password;
 
     @Column(name = "id_role", nullable = false)
-    private Long id_role;
+    private Long Id_role;
 }

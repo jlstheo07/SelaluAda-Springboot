@@ -3,6 +3,8 @@ package com.theo.SelaluAda.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.UUID;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -11,9 +13,14 @@ import lombok.*;
 
 public class Role {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int Id_role;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID Id_role;
 
     @Column(nullable = false, unique = true)
-    private String name;
+    private String name_role;
+
+    public Role(String uuid, String customer) {
+        this.Id_role = UUID.fromString(uuid);
+        this.name_role = customer;
+    }
 }
