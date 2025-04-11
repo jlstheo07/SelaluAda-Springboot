@@ -83,4 +83,14 @@ public class JwtUtil {
                 .getExpiration()
                 .before(new Date());
     }
+
+    public Date extractExpiration(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getExpiration();
+    }
+
 }

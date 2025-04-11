@@ -27,7 +27,7 @@ public class User {
     @Column(name ="email", nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(name ="password", nullable = false, length = 12)
+    @Column(name ="passw", nullable = false, length = 12)
     private String password;
 
     @ManyToOne(fetch = FetchType.LAZY)

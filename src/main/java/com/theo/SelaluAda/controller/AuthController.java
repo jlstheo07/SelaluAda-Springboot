@@ -35,6 +35,19 @@ public class AuthController {
         return ResponseEntity.ok(new JwtResponse(token));
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.badRequest().body("Token tidak valid atau tidak ada.");
+        }
+
+        String token = authHeader.substring(7); // Menghapus "Bearer " dari token
+        authService.logout(token);
+
+        return ResponseEntity.ok("Logout berhasil.");
+    }
+
+
 
 
     @GetMapping("/getidUser")

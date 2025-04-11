@@ -1,8 +1,10 @@
 package com.theo.SelaluAda.services;
 
 import com.theo.SelaluAda.dto.RegisterRequest;
+import com.theo.SelaluAda.model.BlacklistedToken;
 import com.theo.SelaluAda.model.Role;
 import com.theo.SelaluAda.model.User;
+import com.theo.SelaluAda.repository.BlacklistedTokenRepository;
 import com.theo.SelaluAda.repository.RoleRepository;
 import com.theo.SelaluAda.repository.UserRepository;
 import com.theo.SelaluAda.util.JwtUtil;
@@ -11,6 +13,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,6 +32,10 @@ public class AuthService {
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private BlacklistedTokenRepository blacklistedTokenRepository;
+
 
 
     public String authenticateUser(String email, String password) {
@@ -79,11 +89,26 @@ public class AuthService {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         User users = new User();
         users.setEmail(request.getUsername());
-        users.setPassword(passwordEncoder.encode(request.getPassword())); //hasing password
+        //users.setPassword(passwordEncoder.encode(request.getPassword())); //hasing password
+        users.setPassword(request.getPassword()); //no-hasing password
         users.setName(request.getName());
         Role role = roleService.getById(UUID.fromString("8B205EEC-32B1-4197-841E-09249ADF84DC"));
         users.setRole(role);
 
         return userRepository.save(users);
     }
+
+    public void logout(String token) {
+        Date expiryDate = jwtUtil.extractExpiration(token); // ✅ Ambil expiry dari token
+
+        // ✅ Konversi Date → LocalDateTime
+        LocalDateTime localExpiryDate = expiryDate.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
+        // ✅ Simpan token ke database
+        BlacklistedToken blacklistedToken = new BlacklistedToken(token, localExpiryDate);
+        blacklistedTokenRepository.save(blacklistedToken);
+    }
+
 }

@@ -7,6 +7,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -28,10 +30,18 @@ public class JwtSecurityConfig {
                         .requestMatchers("/auth/login").permitAll() // Buka akses login
                         .requestMatchers("/api/v1/users").permitAll() //
                         .requestMatchers("/auth/registerAkunCustomer").permitAll() // Buka akses register
+                        .requestMatchers("/auth/forgot-password").permitAll() // Buka akses forgot password
+                        .requestMatchers("/auth/reset-password").permitAll() // Buka akses reset password
+
                         .anyRequest().authenticated()  // Endpoint lain harus pakai token
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

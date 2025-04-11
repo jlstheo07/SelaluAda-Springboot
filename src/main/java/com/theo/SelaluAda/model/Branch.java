@@ -19,4 +19,13 @@ public class Branch {
 
     @Column(nullable = false, unique = true)
     private String name_branch;
+
+    @Column(nullable = false)
+    private String alamat_branch;
+
+    @Column(nullable = false)
+    private Double latitude_branch;
+
+    @Column(nullable = false)
+    private Double longitude_branch;
 }
