@@ -5,14 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Branch")
-public class Branch {
+public class BranchArea {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id_branch;
@@ -21,6 +19,5 @@ public class Branch {
     private String name_branch;
 
     @Column(nullable = false)
-    private String alamat_branch;
-
+    private String provinsi;
 }

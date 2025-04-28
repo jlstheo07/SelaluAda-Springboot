@@ -1,6 +1,7 @@
 package com.theo.SelaluAda.services;
 
 import com.theo.SelaluAda.dto.RegisterRequest;
+import com.theo.SelaluAda.dto.StaffRequest;
 import com.theo.SelaluAda.model.BlacklistedToken;
 import com.theo.SelaluAda.model.Role;
 import com.theo.SelaluAda.model.User;
@@ -95,6 +96,18 @@ public class AuthService {
         Role role = roleService.getById(UUID.fromString("8B205EEC-32B1-4197-841E-09249ADF84DC"));
         users.setRole(role);
 
+        return userRepository.save(users);
+    }
+
+    public User registerStaff(StaffRequest request) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        User users = new User();
+        users.setEmail(request.getEmail_staff());
+        //users.setPassword(passwordEncoder.encode(request.getPassword())); //hasing password
+        users.setPassword(request.getPassword_staff()); //no-hasing password
+        users.setName(request.getPassword_staff());
+        //Role role = roleService.getById(UUID.fromString("8B205EEC-32B1-4197-841E-09249ADF84DC"));
+        //users.setRole(role);
         return userRepository.save(users);
     }
 

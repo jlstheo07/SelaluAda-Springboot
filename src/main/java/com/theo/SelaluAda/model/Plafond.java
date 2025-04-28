@@ -22,4 +22,7 @@ public class Plafond {
 
     @Column(nullable = false)
     private Double jumlah_plafon;
+
+    @Column(nullable = false)
+    private Double maksimal_tenor;
 }

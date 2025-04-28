@@ -40,11 +40,11 @@ public class JwtFilter extends GenericFilterBean {
         System.out.println("Incoming Request URI: " + requestURI);
         System.out.println("Raw Authorization Header: [" + authHeader + "]");
 
-        // Bypass filter untuk endpoint yang tidak membutuhkan autentikasi
-        //if (requestURI.startsWith("/auth/login")|| requestURI.startsWith("/auth/registerAkunCustomer")) {
-        //    chain.doFilter(request, response);
-        //    return;
-        //}
+//         Bypass filter untuk endpoint yang tidak membutuhkan autentikasi
+        if (requestURI.startsWith("/auth/login")|| requestURI.startsWith("/auth/registerAkunCustomer")) {
+            chain.doFilter(request, response);
+            return;
+        }
 
         // Validasi Authorization Header
         if (authHeader == null || !authHeader.toLowerCase().startsWith("bearer ")) {

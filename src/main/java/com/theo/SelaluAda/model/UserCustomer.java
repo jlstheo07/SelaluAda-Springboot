@@ -34,6 +34,13 @@ public class UserCustomer {
     private String alamat;
 
     @Column(nullable = false)
+    private String kota_kabupaten;
+
+    @ManyToOne
+    @JoinColumn(name = "provinsi")
+    private BranchArea provinsi;
+
+    @Column(nullable = false)
     private String nik;
 
     @Column(nullable = false)

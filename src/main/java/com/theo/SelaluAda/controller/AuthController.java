@@ -1,8 +1,6 @@
 package com.theo.SelaluAda.controller;
 
-import com.theo.SelaluAda.dto.JwtResponse;
-import com.theo.SelaluAda.dto.LoginRequest;
-import com.theo.SelaluAda.dto.RegisterRequest;
+import com.theo.SelaluAda.dto.*;
 import com.theo.SelaluAda.services.AuthService;
 import com.theo.SelaluAda.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +30,15 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
         }
 
+        return ResponseEntity.ok(new JwtResponse(token));
+    }
+
+    @PostMapping("/loginStaff")
+    public ResponseEntity<?> loginStaff(@RequestBody StaffLogin loginRequest) {
+        String token = authService.authenticateUser(loginRequest.getNip_staff(), loginRequest.getPassword_staff());
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+        }
         return ResponseEntity.ok(new JwtResponse(token));
     }
 
@@ -81,6 +88,17 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
         }
 
+        return ResponseEntity.ok(new JwtResponse(token));
+    }
+
+    @PostMapping ("/registerAkunStaff")
+    public ResponseEntity<?> staffregis(@RequestBody StaffRequest StaffRequest){
+        authService.registerStaff(StaffRequest);
+
+        String token = authService.authenticateUser(StaffRequest.getEmail_staff(), StaffRequest.getPassword_staff());
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+        }
         return ResponseEntity.ok(new JwtResponse(token));
     }
 
