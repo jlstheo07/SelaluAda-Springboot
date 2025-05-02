@@ -18,11 +18,14 @@ public class Plafond {
     private UUID id_plafon;
 
     @Column(nullable = false)
-    private String jenis_plafon;
+    private String jenis_plafon; //level bronze, silver, gold, platinum
 
     @Column(nullable = false)
-    private Double jumlah_plafon;
+    private Double jumlah_plafon; //maksimal plafond
 
     @Column(nullable = false)
-    private Double maksimal_tenor;
+    private Double maksimal_tenor; //maksimal tenor
+
+    @Column(nullable = false)
+    private Double jumlah_bunga; //jumlah bunga per level
 }
