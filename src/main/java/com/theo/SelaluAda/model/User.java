@@ -19,19 +19,29 @@ import java.util.UUID;
 public class User {
     @Id
     @GeneratedValue (strategy = GenerationType.UUID)
-    private UUID id;
+    private UUID id_user;
 
     @Column(name = "nama", nullable = false, length = 100 )
-    private String name;
+    private String username; //username
+
+    @Column(nullable = false)
+    private String nama_lengkap;
 
     @Column(name ="email", nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(name ="passw", nullable = false, length = 12)
+    @Column(name ="password", nullable = false, length = 12)
     private String password;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name= "Id_role")
     private Role role;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private UserStaff staff;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private UserCustomer customer;
+
 
 }

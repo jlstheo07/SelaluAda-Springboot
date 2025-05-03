@@ -2,7 +2,6 @@ package com.theo.SelaluAda.services;
 
 import com.theo.SelaluAda.model.Role;
 import com.theo.SelaluAda.model.User;
-import com.theo.SelaluAda.repository.RoleRepository;
 import com.theo.SelaluAda.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +37,7 @@ public class UserService {
 
     public Optional<User> updateUser(UUID id, User updatedUser) {
         return userRepository.findById(id).map(user -> {
-            user.setName(updatedUser.getName());
+            user.setUsername(updatedUser.getUsername());
             user.setEmail(updatedUser.getEmail());
             user.setPassword(updatedUser.getPassword());
             user.setRole(updatedUser.getRole());

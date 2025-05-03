@@ -6,7 +6,6 @@ import com.theo.SelaluAda.model.BlacklistedToken;
 import com.theo.SelaluAda.model.Role;
 import com.theo.SelaluAda.model.User;
 import com.theo.SelaluAda.repository.BlacklistedTokenRepository;
-import com.theo.SelaluAda.repository.RoleRepository;
 import com.theo.SelaluAda.repository.UserRepository;
 import com.theo.SelaluAda.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,7 +91,7 @@ public class AuthService {
         users.setEmail(request.getUsername());
         //users.setPassword(passwordEncoder.encode(request.getPassword())); //hasing password
         users.setPassword(request.getPassword()); //no-hasing password
-        users.setName(request.getName());
+        users.setUsername(request.getName());
         Role role = roleService.getById(UUID.fromString("8B205EEC-32B1-4197-841E-09249ADF84DC"));
         users.setRole(role);
 
@@ -105,7 +104,7 @@ public class AuthService {
         users.setEmail(request.getEmail_staff());
         //users.setPassword(passwordEncoder.encode(request.getPassword())); //hasing password
         users.setPassword(request.getPassword_staff()); //no-hasing password
-        users.setName(request.getPassword_staff());
+        users.setUsername(request.getPassword_staff());
         //Role role = roleService.getById(UUID.fromString("8B205EEC-32B1-4197-841E-09249ADF84DC"));
         //users.setRole(role);
         return userRepository.save(users);

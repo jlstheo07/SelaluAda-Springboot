@@ -1,0 +1,221 @@
+package com.theo.SelaluAda.services;
+
+import com.theo.SelaluAda.dto.CreatePengajuanRequestDTO;
+import com.theo.SelaluAda.dto.MarketingReviewRequestDTO;
+import com.theo.SelaluAda.model.*;
+import com.theo.SelaluAda.repository.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+public class PengajuanService {
+
+    private final PengajuanRepository pengajuanRepository;
+    private final UserRepository userRepository;
+    private final StaffRepository StaffRepository;
+    private final CustomerRepository customerRepository;
+    private final PinjamanRepository pinjamanRepository;
+    private final NotifikasiService notifikasiService;
+
+
+    public void buatPengajuan(CreatePengajuanRequestDTO request, String username) {
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User tidak ditemukan"));
+
+        if (user.getCustomer() == null) {
+            throw new IllegalArgumentException("User bukan customer");
+        }
+
+        Double sisaPlafond = user.getCustomer().getSisa_plafond();
+        if (request.getAmount() > sisaPlafond) {
+            throw new IllegalArgumentException("Jumlah pengajuan melebihi sisa plafon");
+        }
+
+        Branch customerBranch = user.getCustomer().getBranch();
+
+        // Ambil semua employee dari branch ini yg role-nya MARKETING
+        List<UserStaff> marketings = StaffRepository.findAll().stream()
+                .filter(emp ->
+                        emp.getBranch().equals(customerBranch) &&
+                                emp.getUser().getRole().getName_role().equalsIgnoreCase("Marketing"))
+                .toList();
+
+        if (marketings.isEmpty()) {
+            throw new IllegalStateException("Tidak ada marketing untuk cabang ini");
+        }
+
+        // Pilih marketing dengan pengajuan aktif paling sedikit
+        UserStaff selectedMarketing = marketings.stream()
+                .min(Comparator.comparingInt(pengajuanRepository::countActiveByMarketing))
+                .orElseThrow();
+
+        Pengajuan pengajuan = new Pengajuan();
+        pengajuan.setUser(user);
+        pengajuan.setMarketing(selectedMarketing);
+        pengajuan.setAmount(request.getAmount());
+        pengajuan.setStatus("PENDING");
+        pengajuan.setTanggalPengajuan(LocalDateTime.now());
+        pengajuan.setTenor(request.getTenor());
+
+        pengajuanRepository.save(pengajuan);
+
+        notifikasiService.buatNotifikasi(user, "Pengajuan pinjaman Anda telah dikirim.");
+    }
+
+    public void reviewOlehMarketing(UUID idPengajuan, MarketingReviewRequestDTO request, String username) {
+        Pengajuan pengajuan = pengajuanRepository.findById(idPengajuan)
+                .orElseThrow(() -> new NoSuchElementException("Pengajuan tidak ditemukan"));
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new NoSuchElementException("User tidak ditemukan"));
+
+        UserStaff marketing = user.getStaff();
+        pengajuan.setMarketing(marketing); // <-- penting untuk set dulu sebelum akses branch-nya
+
+        // Validasi user yang sedang login adalah marketing dari pengajuan ini
+        if (!pengajuan.getMarketing().getUser().getUsername().equals(username)) {
+            throw new AccessDeniedException("Anda bukan marketing yang ditugaskan untuk pengajuan ini");
+        }
+
+        if (!pengajuan.getStatus().equals("PENDING")) {
+            throw new IllegalStateException("Pengajuan sudah diproses");
+        }
+
+        pengajuan.setCatatanMarketing(request.getCatatan());
+        pengajuan.setTanggalDisetujuiMarketing(LocalDateTime.now());
+
+        if (request.isDisetujui()) {
+            pengajuan.setStatus("REVIEWED");
+
+            Branch branch = pengajuan.getMarketing().getBranch();
+
+            List<UserStaff> managers = StaffRepository.findAll().stream()
+                    .filter(emp ->
+                            emp.getBranch().equals(branch) &&
+                                    emp.getUser().getRole().getName_role().equalsIgnoreCase("Manager"))
+                    .toList();
+
+            if (managers.isEmpty()) {
+                throw new IllegalStateException("Tidak ada Branch Manager untuk cabang ini");
+            }
+
+            pengajuan.setBranchManager(managers.get(0)); // ambil salah satu
+        } else {
+            pengajuan.setStatus("REJECTED");
+        }
+
+        pengajuanRepository.save(pengajuan);
+        notifikasiService.buatNotifikasi(pengajuan.getUser(), "Pengajuan Anda sedang direview oleh Marketing.");
+    }
+
+    public List<Pengajuan> getPengajuanPendingUntukMarketing(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User tidak ditemukan"));
+
+        if (user.getStaff() == null) {
+            throw new IllegalArgumentException("User bukan employee");
+        }
+
+        UserStaff marketing = user.getStaff();
+
+        return pengajuanRepository.findAll().stream()
+                .filter(p -> p.getStatus().equals("PENDING") &&
+                        p.getMarketing().getId_staff().equals(marketing.getId_staff()))
+                .toList();
+    }
+
+    public void reviewByBranchManager(UUID idPengajuan, String username, boolean disetujui, String catatan) {
+        Pengajuan pengajuan = pengajuanRepository.findById(idPengajuan)
+                .orElseThrow(() -> new NoSuchElementException("Pengajuan tidak ditemukan"));
+
+        // Validasi user adalah Branch Manager yang ditugaskan
+        if (!pengajuan.getBranchManager().getUser().getUsername().equals(username)) {
+            throw new AccessDeniedException("Anda bukan Branch Manager untuk pengajuan ini");
+        }
+
+        if (!pengajuan.getStatus().equals("REVIEWED")) {
+            throw new IllegalStateException("Pengajuan tidak dalam status REVIEWED");
+        }
+
+        pengajuan.setCatatanManager(catatan);
+        pengajuan.setTanggalDisetujuiManager(LocalDateTime.now());
+
+        if (disetujui) {
+            pengajuan.setStatus("APPROVED");
+            notifikasiService.buatNotifikasi(pengajuan.getUser(), "Pengajuan Anda telah disetujui oleh Branch Manager.");
+        } else {
+            pengajuan.setStatus("REJECTED");
+        }
+
+        pengajuanRepository.save(pengajuan);
+    }
+
+    public List<Pengajuan> getPengajuanPendingUntukManager(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new NoSuchElementException("User tidak ditemukan"));
+
+        UserStaff manager = user.getStaff();
+        if (manager == null) {
+            throw new IllegalStateException("User ini bukan employee / manager");
+        }
+
+        return pengajuanRepository.findByBranchManagerAndStatus(manager, "REVIEWED");
+    }
+
+    public void disbursePengajuan(UUID idPengajuan, String username) {
+        Pengajuan pengajuan = pengajuanRepository.findById(idPengajuan)
+                .orElseThrow(() -> new NoSuchElementException("Pengajuan tidak ditemukan"));
+
+        if (!pengajuan.getStatus().equals("APPROVED")) {
+            throw new IllegalStateException("Pengajuan belum disetujui oleh Manager");
+        }
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new NoSuchElementException("User tidak ditemukan"));
+
+        if (!user.getRole().getName_role().equalsIgnoreCase("BACKOFFICE")) {
+            throw new AccessDeniedException("Anda bukan Backoffice");
+        }
+
+        UserStaff employee = user.getStaff();
+        if (employee == null || !employee.getBranch().equals(pengajuan.getMarketing().getBranch())) {
+            throw new AccessDeniedException("Anda tidak memiliki akses ke pengajuan ini");
+        }
+
+        // Update status pengajuan
+        pengajuan.setBackOffice(employee);
+        pengajuan.setTanggalPencairan(LocalDateTime.now());
+        pengajuan.setStatus("DISBURSED");
+        pengajuanRepository.save(pengajuan);
+
+        // Simpan ke tabel pinjaman
+        Pinjaman pinjaman = new Pinjaman();
+        pinjaman.setUser(pengajuan.getUser());
+        pinjaman.setAmount(pengajuan.getAmount());
+        pinjaman.setStatus("AKTIF");
+        pinjaman.setTanggalPencairan(LocalDateTime.now());
+        pinjamanRepository.save(pinjaman);
+
+        // Update sisa plafond
+        UserCustomer customer = pengajuan.getUser().getCustomer();
+        double sisaPlafond = customer.getSisa_plafond();
+        double amount = pengajuan.getAmount();
+
+        if (amount > sisaPlafond) {
+            throw new IllegalStateException("Sisa plafond tidak mencukupi");
+        }
+
+        customer.setSisa_plafond(sisaPlafond - amount);
+        customerRepository.save(customer);
+        notifikasiService.buatNotifikasi(pengajuan.getUser(), "Pinjaman Anda telah dicairkan.");
+    }
+}

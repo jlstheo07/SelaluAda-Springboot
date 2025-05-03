@@ -6,32 +6,31 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Entity
+@Table(name = "pinjaman")
 @Getter
 @Setter
-@Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "UserStaff")
-public class UserStaff  {
+public class Pinjaman {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id_staff;
-
-    @OneToOne
-    @JoinColumn(name = "id_user", referencedColumnName = "id_user")
-    private User user;
-
-
-    @Column(nullable = false)
-    private Integer nip;
+    private UUID id_pinjaman;
 
     @ManyToOne
-    @JoinColumn(name = "id_branch", nullable = false)
-    private Branch branch;
+    @JoinColumn(name = "id_user", nullable = false)
+    private User user;
 
     @Column(nullable = false)
-    private String jabatan;
+    private int amount;
+
+    @Column(nullable = false)
+    private String status; // misalnya: AKTIF, LUNAS
+
+    @Column(name = "tanggal_pencairan")
+    private LocalDateTime tanggalPencairan;
 }

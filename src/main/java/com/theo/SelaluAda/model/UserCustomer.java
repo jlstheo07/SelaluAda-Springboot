@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -16,51 +17,50 @@ import java.util.UUID;
 @AllArgsConstructor
 @Table (name = "UserCustomer")
 public class UserCustomer {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id_customer;
 
-    @OneToOne
-    @JoinColumn(name = "id_user", unique = true) // Relasi ke Users
-    private User users;
-
-    @Column(nullable = false)
-    private String tempat_tgl_lahir;
-
-    @Column(nullable = false)
-    private String no_telp;
+    @Column(nullable = false, unique = true)
+    private String nik;
 
     @Column(nullable = false)
     private String alamat;
 
     @Column(nullable = false)
-    private String kota_kabupaten;
-
-    @ManyToOne
-    @JoinColumn(name = "provinsi")
-    private BranchArea provinsi;
+    private String provinsi;
 
     @Column(nullable = false)
-    private String nik;
+    private String tempat_lahir;
 
     @Column(nullable = false)
-    private String nama_ibu_kandung;
+    private Date tanggal_lahir;
 
     @Column(nullable = false)
     private String pekerjaan;
 
     @Column(nullable = false)
-    private String gaji;
+    private Long gaji;
 
     @Column(nullable = false)
-    private String no_rek;
+    private Double plafond;
 
     @Column(nullable = false)
-    private String status_rumah;
+    private Double sisa_plafond;
+
+    @Column(nullable = false)
+    private String no_hp;
+
+    @Column(nullable = false)
+    private String nama_ibu_kandung;
 
     @ManyToOne
-    @JoinColumn(name = "id_plafon")
-    private Plafond plafond;
+    @JoinColumn(name = "id_branch", nullable = false)
+    private Branch branch;
 
-    private Double sisa_plafon;
+    @OneToOne
+    @JoinColumn(name = "id_user", referencedColumnName = "id_user")
+    private User user;
+
 }
