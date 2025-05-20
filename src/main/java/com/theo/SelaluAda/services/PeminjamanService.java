@@ -1,17 +1,6 @@
 package com.theo.SelaluAda.services;
 
-import com.theo.SelaluAda.model.Peminjaman;
-import com.theo.SelaluAda.model.UserCustomer;
-import com.theo.SelaluAda.repository.CustomerRepository;
-import com.theo.SelaluAda.repository.PeminjamanRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-
-import java.lang.reflect.Field;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class PeminjamanService {

@@ -15,23 +15,18 @@ import java.util.UUID;
 @AllArgsConstructor
 @Table(name = "UserStaff")
 public class UserStaff  {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id_staff;
+    private UUID staff_id;
+
+    @Column(nullable = false, unique = true)
+    private Long nip;
+
+    @ManyToOne
+    @JoinColumn(name = "branch_id", nullable = false)
+    private Branch branch;
 
     @OneToOne
     @JoinColumn(name = "id_user", referencedColumnName = "id_user")
     private User user;
-
-
-    @Column(nullable = false)
-    private Integer nip;
-
-    @ManyToOne
-    @JoinColumn(name = "id_branch", nullable = false)
-    private Branch branch;
-
-    @Column(nullable = false)
-    private String jabatan;
 }

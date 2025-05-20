@@ -14,13 +14,9 @@ import java.util.UUID;
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID Id_role;
+    @Column(name = "role_id") // ini untuk mencocokkan nama kolom di database
+    private UUID roleId;
 
-    @Column(nullable = false, unique = true)
-    private String name_role;
-
-    public Role(String uuid, String customer) {
-        this.Id_role = UUID.fromString(uuid);
-        this.name_role = customer;
-    }
+    @Column(name = "nama_role", nullable = false, unique = true)
+    private String namaRole;
 }

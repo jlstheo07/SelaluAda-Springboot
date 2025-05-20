@@ -19,7 +19,7 @@ public class Pengajuan {
     private UUID id_pengajuan;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "id_user", nullable = false)
     private User user; // customer yang mengajukan
 
     @ManyToOne
@@ -50,4 +50,13 @@ public class Pengajuan {
 
     private String catatanMarketing;
     private String catatanManager;
+
+    @Column(name = "bunga")
+    private double bunga;
+
+    @Column(name = "max_plafond")
+    private double maxPlafond;
+
+    @Column(name = "amount_final")
+    private double amountFinal;
 }

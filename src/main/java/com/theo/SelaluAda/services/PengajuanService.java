@@ -42,11 +42,11 @@ public class PengajuanService {
 
         Branch customerBranch = user.getCustomer().getBranch();
 
-        // Ambil semua employee dari branch ini yg role-nya MARKETING
+        // Ambil semua staff dari branch ini yg role-nya MARKETING
         List<UserStaff> marketings = StaffRepository.findAll().stream()
-                .filter(emp ->
-                        emp.getBranch().equals(customerBranch) &&
-                                emp.getUser().getRole().getName_role().equalsIgnoreCase("Marketing"))
+                .filter(stf ->
+                        stf.getBranch().equals(customerBranch) &&
+                                stf.getUser().getRole().getNamaRole().equalsIgnoreCase("Marketing"))
                 .toList();
 
         if (marketings.isEmpty()) {
@@ -99,9 +99,9 @@ public class PengajuanService {
             Branch branch = pengajuan.getMarketing().getBranch();
 
             List<UserStaff> managers = StaffRepository.findAll().stream()
-                    .filter(emp ->
-                            emp.getBranch().equals(branch) &&
-                                    emp.getUser().getRole().getName_role().equalsIgnoreCase("Manager"))
+                    .filter(stf ->
+                            stf.getBranch().equals(branch) &&
+                                    stf.getUser().getRole().getNamaRole().equalsIgnoreCase("Manager"))
                     .toList();
 
             if (managers.isEmpty()) {
@@ -122,14 +122,14 @@ public class PengajuanService {
                 .orElseThrow(() -> new UsernameNotFoundException("User tidak ditemukan"));
 
         if (user.getStaff() == null) {
-            throw new IllegalArgumentException("User bukan employee");
+            throw new IllegalArgumentException("User bukan staff");
         }
 
         UserStaff marketing = user.getStaff();
 
         return pengajuanRepository.findAll().stream()
                 .filter(p -> p.getStatus().equals("PENDING") &&
-                        p.getMarketing().getId_staff().equals(marketing.getId_staff()))
+                        p.getMarketing().getStaff_id().equals(marketing.getStaff_id()))
                 .toList();
     }
 
@@ -165,7 +165,7 @@ public class PengajuanService {
 
         UserStaff manager = user.getStaff();
         if (manager == null) {
-            throw new IllegalStateException("User ini bukan employee / manager");
+            throw new IllegalStateException("User ini bukan Staff / manager");
         }
 
         return pengajuanRepository.findByBranchManagerAndStatus(manager, "REVIEWED");
@@ -182,17 +182,17 @@ public class PengajuanService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NoSuchElementException("User tidak ditemukan"));
 
-        if (!user.getRole().getName_role().equalsIgnoreCase("BACKOFFICE")) {
+        if (!user.getRole().getNamaRole().equalsIgnoreCase("BACKOFFICE")) {
             throw new AccessDeniedException("Anda bukan Backoffice");
         }
 
-        UserStaff employee = user.getStaff();
-        if (employee == null || !employee.getBranch().equals(pengajuan.getMarketing().getBranch())) {
+        UserStaff staff = user.getStaff();
+        if (staff == null || !staff.getBranch().equals(pengajuan.getMarketing().getBranch())) {
             throw new AccessDeniedException("Anda tidak memiliki akses ke pengajuan ini");
         }
 
         // Update status pengajuan
-        pengajuan.setBackOffice(employee);
+        pengajuan.setBackOffice(staff);
         pengajuan.setTanggalPencairan(LocalDateTime.now());
         pengajuan.setStatus("DISBURSED");
         pengajuanRepository.save(pengajuan);

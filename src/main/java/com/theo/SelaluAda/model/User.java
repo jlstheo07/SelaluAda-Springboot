@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -21,14 +23,11 @@ public class User {
     @GeneratedValue (strategy = GenerationType.UUID)
     private UUID id_user;
 
-    @Column(name = "nama", nullable = false, length = 100 )
-    private String username; //username
-
-    @Column(nullable = false)
-    private String nama_lengkap;
+    @Column(nullable = false, unique = true)
+    private String username; //nama konsumen
 
     @Column(name ="email", nullable = false, unique = true, length = 100)
-    private String email;
+    private String email; //email
 
     @Column(name ="password", nullable = false, length = 12)
     private String password;
@@ -37,11 +36,15 @@ public class User {
     @JoinColumn(name= "Id_role")
     private Role role;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private UserStaff staff;
+    @Column(nullable = false)
+    private String nama_lengkap;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private UserCustomer customer;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private UserStaff staff;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FCMToken> fcmTokens = new ArrayList<>();
 }

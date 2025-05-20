@@ -1,6 +1,7 @@
 package com.theo.SelaluAda.model;
 
 
+import com.theo.SelaluAda.enums.PlafondLevel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -56,11 +57,18 @@ public class UserCustomer {
     private String nama_ibu_kandung;
 
     @ManyToOne
-    @JoinColumn(name = "id_branch", nullable = false)
+    @JoinColumn(name = "branch_id", nullable = false)
     private Branch branch;
 
     @OneToOne
     @JoinColumn(name = "id_user", referencedColumnName = "id_user")
     private User user;
+
+    @Column(name = "foto_ktp_url")
+    private String fotoKtpUrl;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "plafond_level")
+    private PlafondLevel plafondLevel;
 
 }

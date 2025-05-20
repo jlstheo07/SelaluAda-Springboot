@@ -18,4 +18,8 @@ public class ReviewManagerDTO {
     private String status;
     private LocalDateTime tanggalPengajuan;
     private String catatanMarketing;
+
+    // Tambahan yang dibutuhkan controller
+    private Boolean disetujui;
+    private String catatan;
 }

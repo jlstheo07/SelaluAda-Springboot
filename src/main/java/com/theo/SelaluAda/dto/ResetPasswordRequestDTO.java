@@ -17,5 +17,7 @@ public class ResetPasswordRequestDTO {
         return newPassword;
     }
 
-
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
 }

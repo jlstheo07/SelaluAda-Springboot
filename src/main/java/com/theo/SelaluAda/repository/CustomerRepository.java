@@ -1,5 +1,8 @@
 package com.theo.SelaluAda.repository;
 
+import com.theo.SelaluAda.enums.ProvinceToBranch;
+import com.theo.SelaluAda.model.Branch;
+import com.theo.SelaluAda.model.User;
 import com.theo.SelaluAda.model.UserCustomer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,13 +15,5 @@ import java.util.UUID;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<UserCustomer, UUID> {
-//    Optional<UsersCustomer> findByusers_id_user(UUID idUser);
-
-
-//    @Transactional(readOnly = true)
-//    @Query("SELECT uc FROM UserCustomer uc WHERE uc.users.id_user = :idUser")
-//    Optional<UserCustomer> findByUsersIdUser(@Param("idUser") UUID idUser);
-//
-
-
+    Optional<UserCustomer> findByUser(User user);
 }

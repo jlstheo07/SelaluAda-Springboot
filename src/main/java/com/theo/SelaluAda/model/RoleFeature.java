@@ -12,19 +12,19 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table  (name = "role_to_feature")
+@Table  (name = "role_feature")
 
-public class RoleToFeature {
+public class RoleFeature {
     @Id
-    @GeneratedValue
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID role_feature_id;
 
     @ManyToOne
-    @JoinColumn(name= "role_id")
+    @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
     @ManyToOne
-    @JoinColumn(name="feature_id")
+    @JoinColumn(name = "feature_id", nullable = false)
     private Feature feature;
 
 }

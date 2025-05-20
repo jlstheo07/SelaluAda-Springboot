@@ -1,9 +1,8 @@
 package com.theo.SelaluAda.model;
 
+import com.theo.SelaluAda.enums.ProvinceToBranch;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -14,13 +13,17 @@ import java.util.UUID;
 @Table(name = "Branch")
 public class Branch {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id_branch;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID branch_id;
 
-    @Column(nullable = false, unique = true)
-    private String name_branch;
+    @Column(name = "namaCabang", nullable = false)
+    private String namaCabang;
 
     @Column(nullable = false)
-    private String alamat_branch;
+    private String alamat;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ProvinceToBranch area; // 👈 Tambahkan ini
 
 }

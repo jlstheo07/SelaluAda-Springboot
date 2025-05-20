@@ -14,93 +14,134 @@ import java.util.Map;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+    private final AuthService authService;
+    private final JwtUtil jwtUtil;
 
-    @Autowired
-    private JwtUtil jwtUtil;
-    @Autowired
-    private AuthService authService;
-
-
-
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        String token = authService.authenticateUser(loginRequest.getUsername(), loginRequest.getPassword());
-
-        if (token == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
-        }
-
-        return ResponseEntity.ok(new JwtResponse(token));
+    public AuthController(AuthService authService, JwtUtil jwtUtil) {
+        this.authService = authService;
+        this.jwtUtil = jwtUtil;
     }
 
-    @PostMapping("/loginStaff")
-    public ResponseEntity<?> loginStaff(@RequestBody StaffLogin loginRequest) {
-        String token = authService.authenticateUser(loginRequest.getNip_staff(), loginRequest.getPassword_staff());
-        if (token == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
-        }
-        return ResponseEntity.ok(new JwtResponse(token));
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponseDTO> login(@RequestBody AuthReqDTO request) {
+        return ResponseEntity.ok(authService.login(request));
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authHeader,
+                                         @RequestBody(required = false) LogoutRequestDTO request) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.badRequest().body("Token tidak valid atau tidak ada.");
         }
-
-        String token = authHeader.substring(7); // Menghapus "Bearer " dari token
-        authService.logout(token);
-
+        String token = authHeader.substring(7);
+        authService.logout(token, request != null ? request.getFcmToken() : null);
         return ResponseEntity.ok("Logout berhasil.");
     }
 
+    @PutMapping("/change-password")
+    public ResponseEntity<String> changePassword(
+            @RequestBody ChangePasswordRequestDTO request,
+            @RequestHeader("Authorization") String authHeader) {
 
+        String token = authHeader.substring(7);
+        String username = jwtUtil.extractidUser(token);
 
-
-    @GetMapping("/getidUser")
-    public ResponseEntity<?> testToken(@RequestHeader("Authorization") String token) {
-        System.out.println("Received Token: [" + token + "]");
-
-        if (token.startsWith("Bearer ")) {
-            token = token.substring(7);
-        }
-
-        token = token.trim(); // Hapus spasi tambahan
-
-        System.out.println("Processed Token: [" + token + "]");
-
-        try {
-            String id_user = jwtUtil.extractidUser(token);
-            Map<String, String> response = new HashMap<>();
-            response.put("id_user", id_user);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token: " + e.getMessage());
-        }
+        authService.changePassword(username, request);
+        return ResponseEntity.ok("Password berhasil diubah.");
     }
 
-    @PostMapping("/registerAkunCustomer")
-    public ResponseEntity<?> registkun(@RequestBody RegisterRequest RegisterRequest) {
-        authService.registerCustomer(RegisterRequest);
-
-        String token = authService.authenticateUser(RegisterRequest.getUsername(), RegisterRequest.getPassword());
-        if (token == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
-        }
-
-        return ResponseEntity.ok(new JwtResponse(token));
-    }
-
-    @PostMapping ("/registerAkunStaff")
-    public ResponseEntity<?> staffregis(@RequestBody StaffRequest StaffRequest){
-        authService.registerStaff(StaffRequest);
-
-        String token = authService.authenticateUser(StaffRequest.getEmail_staff(), StaffRequest.getPassword_staff());
-        if (token == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
-        }
-        return ResponseEntity.ok(new JwtResponse(token));
-    }
+//    @Autowired
+//    private JwtUtil jwtUtil;
+//    @Autowired
+//    private AuthService authService;
+//
+//
+//
+//    @PostMapping("/login")
+//    @CrossOrigin(origins = "*")
+//    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+//        String token = authService.authenticateUser(loginRequest.getUsername(), loginRequest.getPassword());
+//
+//        if (token == null) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+//        }
+//
+//        return ResponseEntity.ok(new JwtResponse(token));
+//    }
+//
+//    @PostMapping("/loginStaff")
+//    @CrossOrigin(origins = "*")
+//    public ResponseEntity<?> loginStaff(@RequestBody StaffLogin loginRequest) {
+//        String token = authService.authenticateUser(loginRequest.getNip_staff(), loginRequest.getPassword_staff());
+//        if (token == null) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+//        }
+//        return ResponseEntity.ok(new JwtResponse(token));
+//    }
+//
+//    @PostMapping("/logout")
+//    @CrossOrigin(origins = "*")
+//    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authHeader) {
+//        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+//            return ResponseEntity.badRequest().body("Token tidak valid atau tidak ada.");
+//        }
+//
+//        String token = authHeader.substring(7); // Menghapus "Bearer " dari token
+//        authService.logout(token);
+//
+//        return ResponseEntity.ok("Logout berhasil.");
+//    }
+//
+//
+//
+//
+//    @GetMapping("/getidUser")
+//    @CrossOrigin(origins = "*")
+//    public ResponseEntity<?> testToken(@RequestHeader("Authorization") String token) {
+//        System.out.println("Received Token: [" + token + "]");
+//
+//        if (token.startsWith("Bearer ")) {
+//            token = token.substring(7);
+//        }
+//
+//        token = token.trim(); // Hapus spasi tambahan
+//
+//        System.out.println("Processed Token: [" + token + "]");
+//
+//        try {
+//            String id_user = jwtUtil.extractidUser(token);
+//            Map<String, String> response = new HashMap<>();
+//            response.put("id_user", id_user);
+//            return ResponseEntity.ok(response);
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token: " + e.getMessage());
+//        }
+//    }
+//
+//    @PostMapping("/registerAkunCustomer")
+//    @CrossOrigin(origins = "*")
+//    public ResponseEntity<?> registkun(@RequestBody RegisterRequest RegisterRequest) {
+//        authService.registerCustomer(RegisterRequest);
+//
+//        String token = authService.authenticateUser(RegisterRequest.getUsername(), RegisterRequest.getPassword());
+//        if (token == null) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+//        }
+//
+//        return ResponseEntity.ok(new JwtResponse(token));
+//    }
+//
+//    @PostMapping ("/registerAkunStaff")
+//    @CrossOrigin(origins = "*")
+//    public ResponseEntity<?> staffregis(@RequestBody StaffRequest StaffRequest){
+//        authService.registerStaff(StaffRequest);
+//
+//        String token = authService.authenticateUser(StaffRequest.getEmail_staff(), StaffRequest.getPassword_staff());
+//        if (token == null) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+//        }
+//        return ResponseEntity.ok(new JwtResponse(token));
+//    }
 
 
 

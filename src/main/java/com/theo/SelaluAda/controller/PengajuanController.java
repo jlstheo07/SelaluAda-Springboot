@@ -2,7 +2,7 @@ package com.theo.SelaluAda.controller;
 
 import com.theo.SelaluAda.dto.CreatePengajuanRequestDTO;
 import com.theo.SelaluAda.dto.MarketingReviewRequestDTO;
-import com.theo.SelaluAda.dto.ReviewManagerRequestDTO;
+import com.theo.SelaluAda.dto.ReviewManagerDTO;
 import com.theo.SelaluAda.model.Pengajuan;
 import com.theo.SelaluAda.services.PengajuanService;
 import lombok.RequiredArgsConstructor;
@@ -44,10 +44,10 @@ public class PengajuanController {
     @PutMapping("/{id}/review-manager")
     public ResponseEntity<String> reviewByManager(
             @PathVariable UUID id,
-            @RequestBody ReviewManagerRequestDTO request,
+            @RequestBody ReviewManagerDTO request,
             Principal principal) {
 
-        pengajuanService.reviewByBranchManager(id, principal.getName(), request.isDisetujui(), request.getCatatan());
+        pengajuanService.reviewByBranchManager(id, principal.getName(), request.getDisetujui(), request.getCatatan());
         return ResponseEntity.ok("Pengajuan telah diproses oleh Branch Manager");
     }
 

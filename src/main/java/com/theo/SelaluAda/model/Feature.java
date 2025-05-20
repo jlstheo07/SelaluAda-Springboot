@@ -2,6 +2,8 @@ package com.theo.SelaluAda.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.UUID;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -10,9 +12,10 @@ import lombok.*;
 
 public class Feature {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "feature_id")
+    private UUID featureId;
 
-    @Column(nullable = false, unique = true)
-    private String name;
+    @Column(nullable = false)
+    private String namaFeature;
 }

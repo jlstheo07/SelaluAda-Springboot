@@ -1,9 +1,11 @@
 package com.theo.SelaluAda.controller;
 
 import com.theo.SelaluAda.dto.APIResponse;
+import com.theo.SelaluAda.dto.UserResponseDTO;
 import com.theo.SelaluAda.model.User;
 import com.theo.SelaluAda.services.UserService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,51 +14,40 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/users")
 public class UserController {
+    @Autowired
+    private UserService userService;
 
-    private final UserService userService;
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
-    // Get all users
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public List<UserResponseDTO> getAllUsers() {
+        return userService.getAllUsersDTO();
     }
 
-    // Get user by ID
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable UUID id) {
-        Optional<User> user = userService.getUserById(id);
-        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping("/{username}")
+    public ResponseEntity<UserResponseDTO> getUserByUsername(@PathVariable String username) {
+        return userService.getUserDTOByUsername(username)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    // Create new user
-    //@PostMapping
-    //public ResponseEntity<User> createUser(@RequestBody User user) {
-    //    return ResponseEntity.ok(userService.createUser(user));
-    //}
-
-    @PostMapping
-    public ResponseEntity<APIResponse<User>> createUser(@Valid @RequestBody User user) {
-        User savedUser = userService.createUser(user);
-        return ResponseEntity.ok(new APIResponse<>(true, "Akun berhasil dibuat", savedUser));
+    @PostMapping("/register")
+    public ResponseEntity<?> createUser(@RequestBody User user) {
+        try {
+            User newUser = userService.createUser(user);
+            return ResponseEntity.ok(newUser);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
-
-    // Update user
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody User user) {
-        Optional<User> updatedUser = userService.updateUser(id, user);
-        return updatedUser.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public User updateUser(@PathVariable UUID id, @RequestBody User user) {
+        return userService.updateUser(id, user);
     }
 
-    // Delete user
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
-        boolean deleted = userService.deleteUser(id);
-        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    public void deleteUser(@PathVariable UUID id) {
+        userService.deleteUser(id);
     }
 }

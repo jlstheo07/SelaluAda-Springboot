@@ -17,7 +17,7 @@ public class ResetPasswordController {
         this.resetPasswordService = resetPasswordService;
     }
 
-    @PutMapping("/reset-password")
+    @PostMapping("/reset-password")
     public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequestDTO request) {
         boolean success = resetPasswordService.resetPassword(request.getToken(), request.getNewPassword());
         if (success) {

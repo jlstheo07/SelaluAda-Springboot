@@ -16,13 +16,12 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Notifikasi {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "id_user", nullable = false)
     private User user;
 
     @Column(nullable = false)

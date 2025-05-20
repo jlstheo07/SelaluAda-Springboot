@@ -16,13 +16,12 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-
     private final Key SECRET_KEY;
     private final long EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 24 jam
 
-    public JwtUtil(@Value("${jwt.secret}") String jwtSecret) {
-        System.out.println("SECRET_KEY (Raw): " + jwtSecret);
-        this.SECRET_KEY = Keys.hmacShaKeyFor(Base64.getDecoder().decode(jwtSecret));
+    public JwtUtil(@Value("${jwt.secret}") String secret) {
+        System.out.println("SECRET_KEY (Raw): " + secret);
+        this.SECRET_KEY = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret));
         System.out.println("SECRET_KEY (Base64 Encoded): " + SECRET_KEY);
     }
 
@@ -31,18 +30,11 @@ public class JwtUtil {
     }
 
     // Generate Token
-    public String generateToken(User user) {
-        Date issuedAt = new Date();
-        Date expiration = new Date(System.currentTimeMillis() + EXPIRATION_TIME);
-
-        System.out.println("Token Generated:");
-        System.out.println("Issued At: " + issuedAt);
-        System.out.println("Expires At: " + expiration);
-
+    public String generateToken(String username) {
         return Jwts.builder()
-                .setSubject(user.getId_user().toString())
-                .setIssuedAt(issuedAt)
-                .setExpiration(expiration)
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -68,6 +60,15 @@ public class JwtUtil {
         }
     }
 
+    public Date extractExpiration(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getExpiration();
+    }
+
     // Validasi token
     public boolean validateToken(String token, String email) {
         return email.equals(extractidUser(token)) && !isTokenExpired(token);
@@ -83,14 +84,4 @@ public class JwtUtil {
                 .getExpiration()
                 .before(new Date());
     }
-
-    public Date extractExpiration(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getExpiration();
-    }
-
 }
