@@ -29,10 +29,10 @@ public class User {
     @Column(name ="email", nullable = false, unique = true, length = 100)
     private String email; //email
 
-    @Column(name ="password", nullable = false, length = 12)
+    @Column(name ="password", nullable = false, length = 100)
     private String password;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name= "Id_role")
     private Role role;
 

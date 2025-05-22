@@ -49,7 +49,7 @@ public class AuthController {
         authService.changePassword(username, request);
         return ResponseEntity.ok("Password berhasil diubah.");
     }
-
+}
 //    @Autowired
 //    private JwtUtil jwtUtil;
 //    @Autowired
@@ -142,7 +142,3 @@ public class AuthController {
 //        }
 //        return ResponseEntity.ok(new JwtResponse(token));
 //    }
-
-
-
-}

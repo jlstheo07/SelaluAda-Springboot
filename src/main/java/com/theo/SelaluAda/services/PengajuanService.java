@@ -46,7 +46,7 @@ public class PengajuanService {
         List<UserStaff> marketings = StaffRepository.findAll().stream()
                 .filter(stf ->
                         stf.getBranch().equals(customerBranch) &&
-                                stf.getUser().getRole().getNamaRole().equalsIgnoreCase("Marketing"))
+                                stf.getUser().getRole().getNamaRole().equalsIgnoreCase("MARKETING"))
                 .toList();
 
         if (marketings.isEmpty()) {
@@ -101,7 +101,7 @@ public class PengajuanService {
             List<UserStaff> managers = StaffRepository.findAll().stream()
                     .filter(stf ->
                             stf.getBranch().equals(branch) &&
-                                    stf.getUser().getRole().getNamaRole().equalsIgnoreCase("Manager"))
+                                    stf.getUser().getRole().getNamaRole().equalsIgnoreCase("BRANCHMANAGER"))
                     .toList();
 
             if (managers.isEmpty()) {

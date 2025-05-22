@@ -2,6 +2,7 @@ package com.theo.SelaluAda.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -32,9 +33,10 @@ public class SecurityConfig {
                 .cors(withDefaults()) // ⬅️ INI PENTING
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.POST, "/auth/change-password").authenticated()
                         .requestMatchers(
                                 "/api/users/register",
-                                "/api/auth/login",
+                                "/auth/login",
                                 "/api/auth/login-google",
                                 "/auth/logout",
                                 "/auth/forgot-password",

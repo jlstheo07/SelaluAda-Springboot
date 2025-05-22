@@ -62,17 +62,22 @@ public class UserService {
         // Encode password sebelum menyimpan
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        // Cari role "Customer" dari database
-        Role defaultRole = roleRepository.findByNamaRole("CUSTOMER")
-                .orElseThrow(() -> new RuntimeException("Role Customer tidak ditemukan"));
-
-        // Set default role jika belum ada
-        if (user.getRole() == null) {
+        // Cek apakah user mengirim role dari frontend
+        if (user.getRole() != null && user.getRole().getRoleId() != null) {
+            UUID roleId = user.getRole().getRoleId();
+            Role roleFromDb = roleRepository.findById(roleId)
+                    .orElseThrow(() -> new RuntimeException("Role tidak ditemukan di database!"));
+            user.setRole(roleFromDb);
+        } else {
+            // Jika role tidak dikirim, pakai default "CUSTOMER"
+            Role defaultRole = roleRepository.findByNamaRole("CUSTOMER")
+                    .orElseThrow(() -> new RuntimeException("Role Customer tidak ditemukan"));
             user.setRole(defaultRole);
         }
 
         return userRepository.save(user);
     }
+
 
     public User updateUser(UUID id, User userDetails) {
         return userRepository.findById(id).map(user -> {
@@ -93,44 +98,3 @@ public class UserService {
 }
 
 
-
-//private final UserRepository userRepository;
-//private final RoleService roleService;
-//
-//
-//public UserService(UserRepository userRepository, RoleService roleService) {
-//    this.userRepository = userRepository;
-//    this.roleService = roleService;
-//}
-//
-//public List<User> getAllUsers() {
-//    return userRepository.findAll();
-//}
-//
-//public Optional<User> getUserById(UUID id) {
-//    return userRepository.findById(id);
-//}
-//
-//public User createUser(User user) {
-//    Role role = roleService.getById(UUID.fromString("8B205EEC-32B1-4197-841E-09249ADF84DC"));
-//    user.setRole(role);
-//    return userRepository.save(user);
-//}
-//
-//public Optional<User> updateUser(UUID id, User updatedUser) {
-//    return userRepository.findById(id).map(user -> {
-//        user.setUsername(updatedUser.getUsername());
-//        user.setEmail(updatedUser.getEmail());
-//        user.setPassword(updatedUser.getPassword());
-//        user.setRole(updatedUser.getRole());
-//        return userRepository.save(user);
-//    });
-//}
-//
-//
-//public boolean deleteUser(UUID id) {
-//    return userRepository.findById(id).map(user -> {
-//        userRepository.delete(user);
-//        return true;
-//    }).orElse(false);
-//}
