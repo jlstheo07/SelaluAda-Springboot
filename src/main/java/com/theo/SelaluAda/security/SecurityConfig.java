@@ -36,6 +36,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/change-password").authenticated()
                         .requestMatchers(
                                 "/api/users/register",
+                                "/api/staff/register",
                                 "/auth/login",
                                 "/api/auth/login-google",
                                 "/auth/logout",

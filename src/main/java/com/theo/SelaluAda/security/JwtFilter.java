@@ -45,10 +45,10 @@ public class JwtFilter extends GenericFilterBean {
         // Hanya lewati endpoint yang memang tidak perlu otentikasi
         if (
                 requestURI.equals("/auth/login") ||
-                        requestURI.equals("/auth/forgot-password") ||
-                        requestURI.equals("/auth/reset-password") ||
-                        requestURI.equals("/api/users/register") ||
-                        requestURI.equals("/api/auth/login-google")
+                requestURI.equals("/auth/forgot-password") ||
+                requestURI.equals("/auth/reset-password") ||
+                requestURI.equals("/api/users/register") ||
+                requestURI.equals("/api/auth/login-google")
         ) {
             chain.doFilter(request, response);
             return;
