@@ -1,13 +1,13 @@
-package com.theo.SelaluAda.security;
+package com.theo.SelaluAda.services;
 
 import com.theo.SelaluAda.model.User;
 import com.theo.SelaluAda.repository.UserRepository;
+import com.theo.SelaluAda.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.*;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -25,14 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .or(() -> userRepository.findByEmail(usernameOrEmail))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + usernameOrEmail));
 
-        // Ambil nama role dari relasi ManyToOne
-        String roleName = user.getRole().getNamaRole(); // ⬅️ Sesuaikan nama field-nya
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + roleName.toUpperCase());
-
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(), // Atau user.getUsername(), tergantung yang dipakai untuk login
-                user.getPassword(),
-                Collections.singleton(authority)
-        );
+        // Return CustomUserDetails yang sudah meng-handle role dan user info
+        return new CustomUserDetails(user);
     }
 }

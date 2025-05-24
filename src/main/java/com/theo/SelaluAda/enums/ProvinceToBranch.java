@@ -5,4 +5,5 @@ public enum ProvinceToBranch {
     SUMATRA,
     KALIMANTAN_NUSA_TENGGARA,
     SULAWESI_PAPUA
+    //Sebagai area
 }

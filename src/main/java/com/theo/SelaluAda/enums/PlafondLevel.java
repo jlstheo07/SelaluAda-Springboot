@@ -3,31 +3,29 @@ package com.theo.SelaluAda.enums;
 import java.util.Map;
 
 public enum PlafondLevel {
-    LEVEL_1(0.2, 3, Map.of(
-            1, 0.04,
-            2, 0.045,
-            3, 0.05
+    LEVEL_1(0.2, 12, Map.of(
+            3, 0.04,
+            6, 0.045,
+            9, 0.05,
+            12, 0.055
     )),
-    LEVEL_2(0.4, 6, Map.of(
-            1, 0.035,
-            2, 0.04,
-            3, 0.045,
-            6, 0.055
+    LEVEL_2(0.4, 12, Map.of(
+            3, 0.035,
+            6, 0.04,
+            9, 0.045,
+            12, 0.055
     )),
     LEVEL_3(0.7, 12, Map.of(
-            1, 0.03,
-            2, 0.035,
-            3, 0.04,
-            6, 0.05,
-            12, 0.06
+            3, 0.03,
+            6, 0.035,
+            9, 0.04,
+            12, 0.05
     )),
-    LEVEL_4(1.0, 24, Map.of(
-            1, 0.025,
-            2, 0.03,
+    LEVEL_4(1.0, 12, Map.of(
             3, 0.035,
             6, 0.045,
-            12, 0.055,
-            24, 0.065
+            9, 0.055,
+            12, 0.065
     ));
 
     private final double plafondMultiplier;

@@ -43,7 +43,7 @@ public class CustomerService {
     public void registerCustomer(String username, CustomerRequestDTO dto, MultipartFile fotoKtp) {
         System.out.println("📥 Memulai proses pendaftaran customer...");
 
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByUsernameOrEmail(username)
                 .orElseThrow(() -> new RuntimeException("User tidak ditemukan"));
 
         if (customerRepository.findByUser(user).isPresent()) {
