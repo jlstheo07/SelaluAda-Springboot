@@ -3,12 +3,11 @@ package com.theo.SelaluAda.controller;
 import com.theo.SelaluAda.dto.*;
 import com.theo.SelaluAda.services.AuthService;
 import com.theo.SelaluAda.util.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -56,7 +55,7 @@ public class AuthController {
         return ResponseEntity.ok("Password berhasil diubah.");
     }
 }
-//    @Autowired
+
 //    private JwtUtil jwtUtil;
 //    @Autowired
 //    private AuthService authService;

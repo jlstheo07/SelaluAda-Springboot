@@ -1,7 +1,13 @@
 package com.theo.SelaluAda.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class ResetPasswordRequestDTO {
+
+    @NotBlank(message = "Token harus diisi")
     private String token;
+
+    @NotBlank(message = "Password baru harus diisi")
     private String newPassword;
 
     // Getter & Setter

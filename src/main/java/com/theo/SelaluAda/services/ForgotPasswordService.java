@@ -45,7 +45,7 @@ public class ForgotPasswordService {
             tokenRepository.save(resetToken);
 
             // Kirim email reset password
-            String resetLink = "http://localhost:4200/reset-password?token=" + token;
+            String resetLink = "http://localhost:4200/auth/boxed-password-reset?token=" + token;
             emailService.sendResetPasswordEmail(email, resetLink);
 
             System.out.println("Reset link: " + resetLink);
