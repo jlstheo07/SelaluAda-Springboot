@@ -38,6 +38,7 @@ public class SecurityConfig {
                                 "/api/users/register",
                                 "/api/staff/register",
                                 "/auth/login",
+                                "/api/auth/signin",
                                 "/api/auth/login-google",
                                 "/auth/logout",
                                 "/auth/forgot-password",

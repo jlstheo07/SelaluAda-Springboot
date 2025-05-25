@@ -44,11 +44,11 @@ public class JwtFilter extends GenericFilterBean {
         // Endpoint yang tidak perlu autentikasi (sesuaikan dengan yang di SecurityConfig)
         // Hanya lewati endpoint yang memang tidak perlu otentikasi
         if (
-                requestURI.equals("/auth/login") ||
-                requestURI.equals("/auth/forgot-password") ||
-                requestURI.equals("/auth/reset-password") ||
-                requestURI.equals("/api/users/register") ||
-                requestURI.equals("/api/auth/login-google")
+                requestURI.startsWith("/auth/login") ||
+                        requestURI.startsWith("/auth/forgot-password") ||
+                        requestURI.startsWith("/auth/reset-password") ||
+                        requestURI.startsWith("/api/users/register") ||
+                        requestURI.startsWith("/api/auth/login-google")
         ) {
             chain.doFilter(request, response);
             return;

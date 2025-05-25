@@ -13,9 +13,13 @@ public class WebConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // semua endpoint
-                        .allowedOrigins("*") // semua asal, atau ganti dgn IP Android kamu
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
+                registry.addMapping("/**")
+                        // Ganti sesuai alamat frontend kamu
+                        .allowedOrigins("http://localhost:4200", "http://your-frontend-domain.com")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
+                        .allowCredentials(true)
+                        .maxAge(3600); // cache preflight 1 jam
             }
         };
     }
