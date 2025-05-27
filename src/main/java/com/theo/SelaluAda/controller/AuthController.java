@@ -33,15 +33,16 @@ public class AuthController {
 
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authHeader,
-                                         @RequestBody(required = false) LogoutRequestDTO request) {
+    public ResponseEntity<MessageResponseDTO> logout(@RequestHeader("Authorization") String authHeader,
+                                                     @RequestBody(required = false) LogoutRequestDTO request) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return ResponseEntity.badRequest().body("Token tidak valid atau tidak ada.");
+            return ResponseEntity.badRequest().body(new MessageResponseDTO("Token tidak valid atau tidak ada."));
         }
         String token = authHeader.substring(7);
         authService.logout(token, request != null ? request.getFcmToken() : null);
-        return ResponseEntity.ok("Logout berhasil.");
+        return ResponseEntity.ok(new MessageResponseDTO("Logout berhasil."));
     }
+
 
     @PutMapping("/change-password")
     public ResponseEntity<String> changePassword(

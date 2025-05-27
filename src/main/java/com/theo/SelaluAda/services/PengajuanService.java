@@ -28,7 +28,7 @@ public class PengajuanService {
 
 
     public void buatPengajuan(CreatePengajuanRequestDTO request, String username) {
-        User user = userRepository.findByEmail(username)
+        User user = userRepository.findByUsernameOrEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User tidak ditemukan"));
 
         if (user.getCustomer() == null) {
