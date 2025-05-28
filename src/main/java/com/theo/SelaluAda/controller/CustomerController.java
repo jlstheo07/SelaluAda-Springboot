@@ -41,7 +41,7 @@ public class CustomerController {
 
         String username = userDetails.getUsername();
         customerService.registerCustomer(username, dto, fotoKtp);
-        return ResponseEntity.ok("Customer berhasil didaftarkan");
+        return ResponseEntity.ok("Customer baru berhasil didaftarkan");
     }
 
     @GetMapping("/me")
