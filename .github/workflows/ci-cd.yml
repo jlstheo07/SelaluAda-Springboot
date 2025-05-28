@@ -30,5 +30,5 @@ jobs:
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "target/*.jar"  # ✅ This works with context from repo root
-          target: "/home/${{ secrets.VM_USER }}/SelaluAdaApp"
+          target: "/home/${{ secrets.VM_USER }}/SelaluAdaApps"
 
