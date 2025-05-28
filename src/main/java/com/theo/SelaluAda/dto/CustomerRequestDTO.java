@@ -9,8 +9,11 @@ public class CustomerRequestDTO {
     private String nik;
     private String tempat_lahir;
     private Date tanggal_lahir;
+    private String gender;
     private String pekerjaan;
     private Long gaji;
+    private String bank;
+    private Long rekening;
     private String no_hp;
     private String nama_ibu_kandung;
     private String alamat;

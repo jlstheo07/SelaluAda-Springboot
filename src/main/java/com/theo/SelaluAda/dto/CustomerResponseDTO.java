@@ -13,8 +13,11 @@ public class CustomerResponseDTO {
     private String nik;
     private String tempat_lahir;
     private Date tanggal_lahir;
+    private String gender;
     private String pekerjaan;
     private Long gaji;
+    private String bank;
+    private Long rekening;
     private Double plafond;
     private Double sisa_plafond;
     private String no_hp;

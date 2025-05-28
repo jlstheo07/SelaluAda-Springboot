@@ -38,11 +38,20 @@ public class UserCustomer {
     @Column(nullable = false)
     private Date tanggal_lahir;
 
+    @Column
+    private String gender;
+
     @Column(nullable = false)
     private String pekerjaan;
 
     @Column(nullable = false)
     private Long gaji;
+
+    @Column
+    private String bank;
+
+    @Column
+    private Long rekening;
 
     @Column(nullable = false)
     private Double plafond;

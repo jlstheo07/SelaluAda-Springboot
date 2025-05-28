@@ -65,6 +65,7 @@ public class CustomerService {
         customer.setNik(dto.getNik());
         customer.setTempat_lahir(dto.getTempat_lahir());
         customer.setTanggal_lahir(dto.getTanggal_lahir());
+        customer.setGender(dto.getGender());
         customer.setPekerjaan(dto.getPekerjaan());
         customer.setGaji(dto.getGaji());
         customer.setPlafond(plafond);
@@ -109,8 +110,11 @@ public class CustomerService {
                     dto.setNik(customer.getNik());
                     dto.setTempat_lahir(customer.getTempat_lahir());
                     dto.setTanggal_lahir(customer.getTanggal_lahir());
+                    dto.setGender(customer.getGender());
                     dto.setPekerjaan(customer.getPekerjaan());
                     dto.setGaji(customer.getGaji());
+                    dto.setBank(customer.getBank());
+                    dto.setRekening(customer.getRekening());
                     dto.setPlafond(customer.getPlafond());
                     dto.setSisa_plafond(customer.getSisa_plafond());
                     dto.setNo_hp(customer.getNo_hp());
