@@ -3,7 +3,7 @@ name: Deploy Spring Boot to Ubuntu VM
 on:
   push:
     branches:
-      - main  # Sesuaikan dengan branch kamu
+      - master  # Sesuaikan dengan branch kamu
 
 jobs:
   build:
