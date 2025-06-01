@@ -68,6 +68,8 @@ public class CustomerService {
         customer.setGender(dto.getGender());
         customer.setPekerjaan(dto.getPekerjaan());
         customer.setGaji(dto.getGaji());
+        customer.setBank(dto.getBank());
+        customer.setRekening(dto.getRekening());
         customer.setPlafond(plafond);
         customer.setSisa_plafond(plafond);
         customer.setNo_hp(dto.getNo_hp());
