@@ -26,13 +26,13 @@ public class JwtFilter extends GenericFilterBean {
 
     // Daftar endpoint publik yang tidak perlu token (bisa ditaruh di config terpisah juga)
     private static final List<String> PUBLIC_PATHS = List.of(
-            "/auth/login",
-            "/auth/forgot-password",
-            "/auth/reset-password",
-            "/api/users/register",
-            "/api/staff/register",
-            "/api/auth/signin",
-            "/api/auth/login-google"
+            "be/auth/login",
+            "be/auth/forgot-password",
+            "be/auth/reset-password",
+            "be/api/users/register",
+            "be/api/staff/register",
+            "be/api/auth/signin",
+            "be/api/auth/login-google"
     );
 
     @Autowired
