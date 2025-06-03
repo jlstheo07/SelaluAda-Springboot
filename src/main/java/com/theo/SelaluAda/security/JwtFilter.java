@@ -16,12 +16,24 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 public class JwtFilter extends GenericFilterBean {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
+
+    // Daftar endpoint publik yang tidak perlu token (bisa ditaruh di config terpisah juga)
+    private static final List<String> PUBLIC_PATHS = List.of(
+            "/auth/login",
+            "/auth/forgot-password",
+            "/auth/reset-password",
+            "/api/users/register",
+            "/api/staff/register",
+            "/api/auth/signin",
+            "/api/auth/login-google"
+    );
 
     @Autowired
     public JwtFilter(JwtUtil jwtUtil, UserDetailsService userDetailsService) {
@@ -41,19 +53,13 @@ public class JwtFilter extends GenericFilterBean {
         System.out.println("Incoming Request URI: " + requestURI);
         System.out.println("Raw Authorization Header: [" + authHeader + "]");
 
-        // Endpoint yang tidak perlu autentikasi (sesuaikan dengan yang di SecurityConfig)
-        // Hanya lewati endpoint yang memang tidak perlu otentikasi
-        if (
-                requestURI.startsWith("/auth/login") ||
-                        requestURI.startsWith("/auth/forgot-password") ||
-                        requestURI.startsWith("/auth/reset-password") ||
-                        requestURI.startsWith("/api/users/register") ||
-                        requestURI.startsWith("/api/auth/login-google")
-        ) {
-            chain.doFilter(request, response);
-            return;
+        // Lewatkan tanpa autentikasi jika path cocok dengan salah satu PUBLIC_PATHS
+        for (String path : PUBLIC_PATHS) {
+            if (requestURI.contains(path)) {
+                chain.doFilter(request, response);
+                return;
+            }
         }
-
 
         // Validasi token
         if (authHeader == null || !authHeader.toLowerCase().startsWith("bearer ")) {
