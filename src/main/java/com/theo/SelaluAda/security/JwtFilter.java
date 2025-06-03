@@ -44,7 +44,7 @@ public class JwtFilter extends GenericFilterBean {
         // Endpoint yang tidak perlu autentikasi (sesuaikan dengan yang di SecurityConfig)
         // Hanya lewati endpoint yang memang tidak perlu otentikasi
         if (
-                requestURI.startsWith("/auth/login") ||
+                requestURI.startsWith("be/auth/login") ||
                         requestURI.startsWith("/auth/forgot-password") ||
                         requestURI.startsWith("/auth/reset-password") ||
                         requestURI.startsWith("/api/users/register") ||
