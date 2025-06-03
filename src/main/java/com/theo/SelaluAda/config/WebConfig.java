@@ -14,12 +14,14 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        // Ganti sesuai alamat frontend kamu
-                        .allowedOrigins("http://localhost:4200", "http://your-frontend-domain.com")
+                        .allowedOrigins(
+                                "http://localhost:4200",
+                                "https://jlstheo07-selalu-ada-fe.vercel.app"
+                        )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true)
-                        .maxAge(3600); // cache preflight 1 jam
+                        .maxAge(3600);
             }
         };
     }
