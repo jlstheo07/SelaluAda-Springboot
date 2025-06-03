@@ -56,7 +56,7 @@ public class JwtFilter extends GenericFilterBean {
 
 
         // Validasi token
-        if (authHeader.isEmpty() || !authHeader.toLowerCase().startsWith("bearer ")) {
+        if (authHeader == null || !authHeader.toLowerCase().startsWith("bearer ")) {
 
             System.out.println("Raw Authorization Header: [" + authHeader + "]");
             System.out.println("Authorization header missing or invalid.");
